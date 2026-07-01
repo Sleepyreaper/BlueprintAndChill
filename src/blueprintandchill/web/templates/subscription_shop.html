@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="card">
+    <h2>Subscription shopping</h2>
+    <p>Signed in as demo principal: <strong>{{ user.display_name }}</strong></p>
+    <p class="note">
+        TODO: replace demo principal with real Entra sign-in, claims validation, and role-based access.
+    </p>
+</section>
+
+<section class="card">
+    <h3>Deployable options</h3>
+    {% for option in catalog.options %}
+    <article class="option">
+        <h4>{{ option.landing_zone }}</h4>
+        <p><strong>Regions:</strong> {{ option.regions | join(', ') }}</p>
+        <p><strong>Environments:</strong> {{ option.environments | join(', ') }}</p>
+        <ul>
+            {% for feature in option.features %}
+            <li>{{ feature.name }} — {{ feature.description }}</li>
+            {% endfor %}
+        </ul>
+    </article>
+    {% endfor %}
+</section>
+
+<section class="card">
+    <h3>Demo request payload</h3>
+    <p>Submit the following JSON to <code>POST /api/v1/subscriptions/requests</code>:</p>
+<pre>{
+  "business_area": "corp",
+  "workload_name": "accounting-api",
+  "environment": "dev",
+  "region": "eastus",
+  "owner_email": "owner@example.com",
+  "features": ["hub_peering", "policy_baseline"],
+  "network": {
+    "address_space": "10.42.0.0/24",
+    "connect_to_hub": true,
+    "private_endpoints_required": false
+  },
+  "notes": "Initial landing zone request"
+}</pre>
+</section>
+{% endblock %}
