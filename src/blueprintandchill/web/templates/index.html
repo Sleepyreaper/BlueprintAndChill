@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="card">
+    <h2>Foundation status</h2>
+    <p>
+        This app is a scaffold for a future Landmark subscription-vending workflow.
+        Authentication and Azure automation are intentionally stubbed behind safe interfaces.
+    </p>
+    <ul>
+        <li>Entra auth configured: <strong>{{ 'yes' if entra_configured else 'not yet' }}</strong></li>
+        <li>Catalog API: <code>/api/v1/catalog/subscription-options</code></li>
+        <li>Request API: <code>/api/v1/subscriptions/requests</code></li>
+    </ul>
+    {% if login_url %}
+    <p><a class="button" href="{{ login_url }}">Login with Microsoft Entra ID</a></p>
+    {% else %}
+    <p class="note">TODO: Configure Entra environment values to enable a real login initiation flow.</p>
+    {% endif %}
+    <p><a class="button secondary" href="/shop">Open subscription shop</a></p>
+</section>
+{% endblock %}
