@@ -1,0 +1,67 @@
+:root {
+    color-scheme: light;
+    font-family: Arial, Helvetica, sans-serif;
+    line-height: 1.5;
+}
+
+body {
+    margin: 0;
+    background: #f4f7fb;
+    color: #132238;
+}
+
+.site-header {
+    background: #0f3d6e;
+    color: #ffffff;
+    padding: 2rem;
+}
+
+.tagline {
+    margin: 0.5rem 0 0;
+    opacity: 0.9;
+}
+
+.content {
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 2rem;
+}
+
+.card {
+    background: #ffffff;
+    border-radius: 0.75rem;
+    padding: 1.5rem;
+    margin-bottom: 1.5rem;
+    box-shadow: 0 2px 8px rgba(15, 61, 110, 0.08);
+}
+
+.button {
+    display: inline-block;
+    background: #0f62fe;
+    color: #ffffff;
+    text-decoration: none;
+    padding: 0.7rem 1rem;
+    border-radius: 0.5rem;
+}
+
+.button.secondary {
+    background: #4a5568;
+}
+
+.note {
+    color: #5b6575;
+}
+
+.option {
+    border-top: 1px solid #d9e2ec;
+    padding-top: 1rem;
+    margin-top: 1rem;
+}
+
+pre {
+    overflow-x: auto;
+    background: #0b1020;
+    color: #d6e4ff;
+    padding: 1rem;
+    border-radius: 0.5rem;
+}
