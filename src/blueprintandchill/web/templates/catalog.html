@@ -1,0 +1,140 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="bac-catalog">
+    <header class="bac-catalog-header">
+        <h1>Shop the Landing Zone</h1>
+        <p>
+            Select what gets deployed into the shared hub landing zone and
+            into your new spoke subscription. This page renders from sample
+            catalog data (<code>blueprintandchill.web.catalog</code>) and is
+            not yet wired to the vending orchestration submit flow.
+        </p>
+        <p class="bac-note">{{ catalog.source_note if catalog else "Catalog data not yet loaded -- pass a Catalog into this template's context." }}</p>
+    </header>
+
+    {% if catalog %}
+    <form class="bac-catalog-form" method="post" action="#" aria-disabled="true">
+
+        <fieldset class="bac-catalog-section">
+            <legend>Hub / Landing Zone Components</legend>
+            <p class="bac-section-hint">
+                Shared resources provisioned once per region in the central
+                hub subscription.
+            </p>
+            <div class="bac-card-grid">
+                {% for item in catalog.landing_zone_components %}
+                <label class="bac-card" for="item-{{ item.id }}">
+                    <input
+                        type="checkbox"
+                        id="item-{{ item.id }}"
+                        name="landing_zone_components"
+                        value="{{ item.id }}"
+                        {% if item.default_selected %}checked{% endif %}
+                        disabled
+                    >
+                    <span class="bac-card-icon">{{ item.icon }}</span>
+                    <span class="bac-card-name">{{ item.name }}</span>
+                    <span class="bac-card-desc">{{ item.description }}</span>
+                    {% if item.requires_hub %}
+                    <span class="bac-badge">hub-only</span>
+                    {% endif %}
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+
+        <fieldset class="bac-catalog-section">
+            <legend>Spoke Options</legend>
+            <p class="bac-section-hint">
+                Per-subscription networking and baseline resources applied
+                to your new spoke when it is vended.
+            </p>
+            <div class="bac-card-grid">
+                {% for item in catalog.spoke_options %}
+                <label class="bac-card" for="item-{{ item.id }}">
+                    <input
+                        type="checkbox"
+                        id="item-{{ item.id }}"
+                        name="spoke_options"
+                        value="{{ item.id }}"
+                        {% if item.default_selected %}checked{% endif %}
+                        disabled
+                    >
+                    <span class="bac-card-icon">{{ item.icon }}</span>
+                    <span class="bac-card-name">{{ item.name }}</span>
+                    <span class="bac-card-desc">{{ item.description }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+
+        <fieldset class="bac-catalog-section">
+            <legend>Workload / Environment</legend>
+            <p class="bac-section-hint">
+                Determines the Azure Policy strictness and the Workload tag
+                applied to the vended subscription.
+            </p>
+            <div class="bac-card-grid bac-card-grid-radio">
+                {% for item in catalog.workload_environments %}
+                <label class="bac-card" for="item-{{ item.id }}">
+                    <input
+                        type="radio"
+                        id="item-{{ item.id }}"
+                        name="workload_environment"
+                        value="{{ item.id }}"
+                        {% if item.default_selected %}checked{% endif %}
+                        disabled
+                    >
+                    <span class="bac-card-icon">{{ item.icon }}</span>
+                    <span class="bac-card-name">{{ item.name }}</span>
+                    <span class="bac-card-desc">{{ item.description }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+
+        <fieldset class="bac-catalog-section">
+            <legend>Region</legend>
+            <p class="bac-section-hint">
+                Region the hub and vended spoke subscription will deploy
+                into.
+            </p>
+            <div class="bac-card-grid bac-card-grid-radio">
+                {% for region in catalog.regions %}
+                <label class="bac-card" for="region-{{ region.id }}">
+                    <input
+                        type="radio"
+                        id="region-{{ region.id }}"
+                        name="region"
+                        value="{{ region.id }}"
+                        {% if region.is_default %}checked{% endif %}
+                        disabled
+                    >
+                    <span class="bac-card-name">{{ region.display_name }}</span>
+                    <span class="bac-card-desc">{{ region.geography }} &middot; {{ region.azure_region }}</span>
+                </label>
+                {% endfor %}
+            </div>
+        </fieldset>
+
+        <div class="bac-catalog-actions">
+            <button type="submit" disabled title="Submission wiring not yet implemented">
+                Deploy (coming soon)
+            </button>
+            <p class="bac-note">
+                Submission is intentionally disabled -- orchestration wiring
+                against blueprintandchill.models.vending lands in a later
+                task.
+            </p>
+        </div>
+    </form>
+    {% else %}
+    <p class="bac-note">
+        No catalog data was provided to this template. Pass the result of
+        <code>blueprintandchill.web.catalog.get_demo_catalog()</code> as the
+        <code>catalog</code> context variable when rendering this page.
+    </p>
+    {% endif %}
+</section>
+{% endblock %}
