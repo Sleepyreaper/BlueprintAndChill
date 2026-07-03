@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="bac-result">
+    <header class="bac-result-header">
+        <h1>Order Receipt</h1>
+        <p>
+            Thanks for shopping the Landing Zone catalog! Your selections
+            have been accepted and (in this framework build) simulated
+            through the subscription-vending orchestrator stub.
+        </p>
+    </header>
+
+    <dl class="bac-receipt-details">
+        <dt>Order ID</dt>
+        <dd>{{ order_id }}</dd>
+
+        <dt>Status</dt>
+        <dd><span class="bac-badge">{{ status }}</span></dd>
+    </dl>
+
+    <p class="bac-note">
+        TODO(vending): this receipt currently renders placeholder
+        context from the router (see
+        <code>blueprintandchill.web.routes.order_result</code>). Once
+        orders are persisted and
+        <code>blueprintandchill.vending.orchestrator.provision_subscription</code>
+        is wired to real Entra ID / MCA billing / subscription API
+        clients, this page should show the real
+        <code>ProvisionSubscriptionResult</code> -- service principal
+        app ID, assigned billing role, subscription ID, and
+        provisioning state -- instead of a simulated status.
+    </p>
+
+    <p>
+        <a href="/">Back to catalog</a>
+    </p>
+</section>
+{% endblock %}

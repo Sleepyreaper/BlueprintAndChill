@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ page_title | default("BlueprintAndChill") }}</title>
+    <link rel="stylesheet" href="/static/style.css" onerror="this.remove()">
+</head>
+<body>
+    <header class="bac-header">
+        <div class="bac-brand">
+            <span class="bac-logo">BlueprintAndChill</span>
+            <span class="bac-tagline">Azure Landing Zone &amp; Subscription Vending</span>
+        </div>
+        <nav class="bac-nav">
+            <a href="/">Home</a>
+            {% if user %}
+                <span class="bac-user">{{ user.get("preferred_username", "signed in") }}</span>
+                <a href="/auth/logout">Log out</a>
+            {% else %}
+                <a href="/auth/login">Log in</a>
+            {% endif %}
+        </nav>
+    </header>
+
+    <main class="bac-main">
+        {% block content %}
+        <section class="bac-placeholder">
+            <h1>Welcome to BlueprintAndChill</h1>
+            <p>
+                This is the foundational web app shell. Shopping catalog and
+                orchestration submission pages will be built in later tasks.
+            </p>
+            <p class="bac-note">
+                Framework status: templating OK, routing OK, auth scaffold OK
+                (login is a placeholder until Entra ID app registration is wired up).
+            </p>
+        </section>
+        {% endblock %}
+    </main>
+
+    <footer class="bac-footer">
+        <span>&copy; BlueprintAndChill -- built for Landmark on Azure.</span>
+    </footer>
+</body>
+</html>
