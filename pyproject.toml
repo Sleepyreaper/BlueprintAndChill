@@ -1,0 +1,254 @@
+# BlueprintAndChill — Azure Landing Zone + Subscription-Vending Accelerator for Landmark
+# Foundational Python project scaffold (src-layout, PEP 621 packaging).
+#
+# This file defines build metadata only. No secrets, tenant IDs, subscription IDs,
+# or credentials are ever embedded here — all runtime config comes from environment
+# variables / Azure Key Vault / managed identity at deploy time.
+
+[build-system]
+requires = ["setuptools>=69.0", "wheel>=0.42"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "blueprintandchill"
+version = "0.1.0"
+description = "Azure Landing Zone + subscription-vending accelerator for Landmark, built on Microsoft CAF/ALZ patterns."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "See LICENSE file in repository root" }
+authors = [
+    { name = "Springfield Core Team" }
+]
+keywords = [
+    "azure",
+    "landing-zone",
+    "cloud-adoption-framework",
+    "subscription-vending",
+    "hub-and-spoke",
+    "fastapi",
+]
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: OS Independent",
+    "Framework :: FastAPI",
+]
+
+# Core runtime dependencies kept intentionally minimal. Feature-specific deps
+# live in optional-dependencies groups below so later tasks can install just
+# what they need (e.g. `pip install -e ".[app]"` for the web app).
+dependencies = [
+    "pydantic>=2.6,<3.0",
+    "pydantic-settings>=2.2,<3.0",
+    "python-dotenv>=1.0,<2.0",
+]
+
+[project.optional-dependencies]
+# Web application layer (Azure Web App demo "shopping cart" UI + API)
+app = [
+    "fastapi>=0.110,<1.0",
+    "uvicorn[standard]>=0.29,<1.0",
+    "jinja2>=3.1,<4.0",
+    "python-multipart>=0.0.9,<1.0",
+]
+
+# Core Azure automation layer (subscription vending, service principal
+# creation, billing role assignment, landing zone provisioning)
+core = [
+    "azure-identity>=1.16,<2.0",
+    "azure-mgmt-subscription>=3.1,<4.0",
+    "azure-mgmt-resource>=23.1,<24.0",
+    "azure-mgmt-managementgroups>=1.0,<2.0",
+    "azure-mgmt-authorization>=4.0,<5.0",
+    "azure-mgmt-billing>=6.0,<7.0",
+    "httpx>=0.27,<1.0",
+]
+
+# Event-driven trigger layer (MCA invoice-section-created -> subscription
+# vending). Placeholder deps for later Azure Functions / Event Grid task.
+events = [
+    "azure-functions>=1.20,<2.0",
+    "azure-eventgrid>=4.16,<5.0",
+    "azure-servicebus>=7.12,<8.0",
+]
+
+# Test tooling
+test = [
+    "pytest>=8.1,<9.0",
+    "pytest-asyncio>=0.23,<1.0",
+    "pytest-cov>=5.0,<6.0",
+    "httpx>=0.27,<1.0",
+    "respx>=0.21,<1.0",
+]
+
+# Dev/lint tooling
+dev = [
+    "ruff>=0.4,<1.0",
+    "mypy>=1.10,<2.0",
+    "black>=24.4,<25.0",
+]
+
+# Convenience group installing everything (app + core + events + test + dev)
+all = [
+    "blueprintandchill[app,core,events,test,dev]"
+]
+
+[project.urls]
+Repository = "https://github.com/Sleepyreaper/BlueprintAndChill"
+
+# CLI entry point placeholder — wired up to a real Typer/argparse app in a
+# later task. Kept here now so the build target is stable from day one.
+[project.scripts]
+blueprintandchill = "blueprintandchill.cli:main"
+
+[tool.setuptools]
+package-dir = { "" = "src" }
+
+[tool.setuptools.packages.find]
+where = ["src"]
+include = ["blueprintandchill*"]
+
+[tool.setuptools.package-data]
+blueprintandchill = ["py.typed"]
+
+[tool.pytest.ini_options]
+minversion = "8.0"
+addopts = "-ra -q --strict-markers"
+testpaths = ["tests"]
+pythonpath = ["src"]
+markers = [
+    "unit: fast, isolated unit tests",
+    "integration: tests that touch stubbed Azure SDK clients",
+]
+
+[tool.mypy]
+python_version = "3.11"
+mypy_path = "src"
+packages = ["blueprintandchill"]
+ignore_missing_imports = true
+disallow_untyped_defs = false
+warn_unused_ignores = true
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+ignore = ["E501"]
+```
+
+### .gitignore
+```gitignore
+# ============================================================
+# BlueprintAndChill — .gitignore
+# Covers: Python, virtualenvs, pytest/build caches, Terraform,
+# Bicep, IDE noise, and local environment/secret files.
+# ============================================================
+
+# ---------- Python ----------
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+dist/
+*.egg-info/
+.eggs/
+wheels/
+pip-wheel-metadata/
+*.manifest
+*.spec
+MANIFEST
+
+# ---------- Virtual environments ----------
+.venv/
+venv/
+env/
+ENV/
+.env.venv/
+.python-version
+
+# ---------- Test / coverage / type-check caches ----------
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.tox/
+.nox/
+.coverage
+.coverage.*
+htmlcov/
+coverage.xml
+*.cover
+*.py,cover
+.cache/
+.hypothesis/
+
+# ---------- Packaging tool caches ----------
+.pdm-python
+.pdm.toml
+poetry.lock
+Pipfile.lock
+*.whl
+
+# ---------- Terraform ----------
+**/.terraform/
+**/.terraform.lock.hcl
+*.tfstate
+*.tfstate.*
+*.tfstate.backup
+*.tfplan
+*.tfplan.*
+crash.log
+crash.*.log
+override.tf
+override.tf.json
+*_override.tf
+*_override.tf.json
+.terraformrc
+terraform.rc
+
+# ---------- Bicep / ARM build artifacts ----------
+*.arm.json
+bicepconfig.local.json
+**/bin/
+**/obj/
+*.compiled.json
+
+# ---------- Azure / cloud local artifacts ----------
+.azure/
+*.publishsettings
+local.settings.json
+*.PublishSettings
+
+# ---------- Environment / secrets (never commit) ----------
+.env
+.env.*
+!.env.example
+*.pem
+*.key
+*.pfx
+*secrets*.json
+*credentials*.json
+
+# ---------- IDE / editor noise ----------
+.vscode/
+!.vscode/extensions.json
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# ---------- Jupyter ----------
+.ipynb_checkpoints/
+
+# ---------- Logs ----------
+*.log
+logs/
